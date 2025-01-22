@@ -16,7 +16,12 @@ export default defineConfig({
       output: {
         entryFileNames: '[name].js',
         chunkFileNames: 'assets/[name].[hash].js',
-        assetFileNames: 'assets/[name].[ext]'
+        assetFileNames: 'assets/[name].[ext]',
+        manualChunks: {
+          'fontawesome': ['@fortawesome/fontawesome-svg-core'],
+          'material': ['@mdi/js', '@mdi/react'],
+          'heroicons': ['@heroicons/react'],
+        }
       }
     },
     sourcemap: process.env.NODE_ENV === 'development',

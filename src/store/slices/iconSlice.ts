@@ -6,6 +6,7 @@ interface IconState {
   searchQuery: string;
   selectedLibrary: string;
   loading: boolean;
+  filteredIcons: Icon[];
 }
 
 const initialState: IconState = {
@@ -13,6 +14,7 @@ const initialState: IconState = {
   searchQuery: '',
   selectedLibrary: 'all',
   loading: false,
+  filteredIcons: [],
 };
 
 const iconSlice = createSlice({
@@ -21,12 +23,15 @@ const iconSlice = createSlice({
   reducers: {
     setIcons: (state, action: PayloadAction<Icon[]>) => {
       state.icons = action.payload;
+      state.filteredIcons = action.payload;
     },
     setSearchQuery: (state, action: PayloadAction<string>) => {
       state.searchQuery = action.payload;
+      state.filteredIcons = filterIcons(state.icons, state.selectedLibrary, action.payload);
     },
     setSelectedLibrary: (state, action: PayloadAction<string>) => {
       state.selectedLibrary = action.payload;
+      state.filteredIcons = filterIcons(state.icons, action.payload, state.searchQuery);
     },
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
@@ -34,16 +39,14 @@ const iconSlice = createSlice({
   },
 });
 
-// Simple selector for filtered icons
-export const selectFilteredIcons = (state: { icons: IconState }): Icon[] => {
-  const { icons, selectedLibrary, searchQuery } = state.icons;
-  
+// Helper function to filter icons
+const filterIcons = (icons: Icon[], library: string, query: string): Icon[] => {
   return icons.filter(icon => {
-    const matchesLibrary = selectedLibrary === 'all' || icon.library === selectedLibrary;
-    const matchesSearch = !searchQuery || 
-      icon.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      icon.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
-
+    const matchesLibrary = library === 'all' || icon.library === library;
+    const matchesSearch = !query || 
+      icon.name.toLowerCase().includes(query.toLowerCase()) ||
+      icon.tags.some(tag => tag.toLowerCase().includes(query.toLowerCase()));
+    
     return matchesLibrary && matchesSearch;
   });
 };

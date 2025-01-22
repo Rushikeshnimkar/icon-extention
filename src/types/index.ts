@@ -26,21 +26,16 @@ export interface FontAwesomeIconType extends BaseIcon {
   };
 }
 
-export interface MaterialIconType extends BaseIcon {
-  library: 'material';
-  component: ComponentType<BaseIconProps & { path: string }>;
-  props: {
-    path: string;
-    style?: CSSProperties;
-  };
-}
-
 export interface HeroIconType extends BaseIcon {
   library: 'heroicons';
   component: ComponentType<BaseIconProps>;
-  props: {
-    style?: CSSProperties;
-  };
+  props: BaseIconProps;
+}
+
+export interface MaterialIconType extends BaseIcon {
+  library: 'material';
+  component: ComponentType<BaseIconProps & { path: string }>;
+  props: BaseIconProps & { path: string };
 }
 
 // Combined Icon Type
@@ -49,6 +44,7 @@ export type Icon = FontAwesomeIconType | HeroIconType | MaterialIconType;
 // State Types
 export interface IconState {
   icons: Icon[];
+  filteredIcons: Icon[];
   searchQuery: string;
   selectedLibrary: string;
   loading: boolean;
